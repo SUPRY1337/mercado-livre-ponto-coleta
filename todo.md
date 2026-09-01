@@ -26,3 +26,6 @@
 - [x] Remover qualquer assinatura de autoria externa do projeto
 - [x] Criar repositório privado `mercado-livre-ponto-coleta` no GitHub
 - [x] Enviar o código atualizado para o repositório e validar o link
+- [x] Tornar público o repositório `SUPRY1337/mercado-livre-ponto-coleta`
+- [x] Confirmar a publicação pública do site
+- [x] Verificar disponibilidade do endereço `pontocoletamercadolivre.manus.space` — retorno 404; domínio atual permanece ativo
