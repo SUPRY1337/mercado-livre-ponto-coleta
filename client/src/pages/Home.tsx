@@ -35,7 +35,7 @@ export default function Home() {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (getPostSubmitState(canSubmit) !== "confirmation") return;
-    // Esta versão é demonstrativa: nenhum dado pessoal ou documento é enviado ou persistido.
+    // O envio é concluído localmente nesta etapa, sem persistência de dados pessoais.
     setSubmitted(true);
     setFileName("");
   }
@@ -45,7 +45,7 @@ export default function Home() {
       <main className="min-h-screen bg-[#fffdf7] text-[#132b58]">
         <header className="border-b border-[#dbe7f7] bg-white/90 backdrop-blur">
           <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
-            <a href="/" className="flex items-center gap-3" aria-label="Voltar para início">
+            <a href={import.meta.env.BASE_URL} className="flex items-center gap-3" aria-label="Voltar para início">
               <span className="grid size-11 place-items-center rounded-2xl bg-[#ffe100] text-[#123d91] shadow-[0_8px_20px_rgba(255,225,0,.25)]"><Package size={24} strokeWidth={2.5} /></span>
               <span><strong className="block max-w-[190px] text-[11px] font-black leading-[1.05] tracking-[.03em]">MERCADO LIVRE PONTO DE COLETA</strong><span className="text-xs text-[#60708e]">pré-cadastro de parceiros</span></span>
             </a>
@@ -58,7 +58,7 @@ export default function Home() {
             <h1 className="mx-auto max-w-xl text-3xl font-black tracking-tight text-[#132b58] sm:text-5xl">Seu próximo passo começa aqui.</h1>
             <p className="mx-auto mt-5 max-w-lg text-base leading-7 text-[#60708e] sm:text-lg">Seu cadastro foi enviado com sucesso. Iremos enviar uma mensagem ao seu Gmail com as informações necessárias para confirmação e os próximos passos.</p>
             <div className="mx-auto mt-8 flex max-w-md items-start gap-3 rounded-2xl bg-[#f4f8fd] p-4 text-left text-sm leading-6 text-[#526582]"><ShieldCheck className="mt-0.5 shrink-0 text-[#1769d1]" size={20} /><span>As informações serão utilizadas apenas para a confirmação e para orientar os próximos passos do cadastro.</span></div>
-            <a href="/" className="mt-9 inline-flex items-center gap-2 rounded-xl bg-[#123d91] px-6 py-3.5 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#0d3176] focus:outline-none focus:ring-4 focus:ring-[#1769d1]/25">Voltar ao início <ArrowRight size={18} /></a>
+            <a href={import.meta.env.BASE_URL} className="mt-9 inline-flex items-center gap-2 rounded-xl bg-[#123d91] px-6 py-3.5 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#0d3176] focus:outline-none focus:ring-4 focus:ring-[#1769d1]/25">Voltar ao início <ArrowRight size={18} /></a>
           </div>
         </section>
       </main>
@@ -70,7 +70,7 @@ export default function Home() {
       <div className="absolute inset-x-0 top-0 -z-0 h-[510px] bg-[radial-gradient(circle_at_80%_10%,rgba(23,105,209,.15),transparent_35%),linear-gradient(135deg,#fff4a9_0%,#fffdf7_57%)]" />
       <header className="relative z-10 border-b border-[#dbe7f7]/80 bg-white/75 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
-          <a href="/" className="flex items-center gap-3" aria-label="MERCADO LIVRE PONTO DE COLETA — início">
+          <a href={import.meta.env.BASE_URL} className="flex items-center gap-3" aria-label="MERCADO LIVRE PONTO DE COLETA — início">
             <span className="grid size-11 place-items-center rounded-2xl bg-[#ffe100] text-[#123d91] shadow-[0_8px_20px_rgba(255,225,0,.25)]"><Package size={24} strokeWidth={2.5} /></span>
             <span><strong className="block max-w-[190px] text-[11px] font-black leading-[1.05] tracking-[.03em]">MERCADO LIVRE PONTO DE COLETA</strong><span className="text-xs text-[#60708e]">pré-cadastro de parceiros</span></span>
           </a>

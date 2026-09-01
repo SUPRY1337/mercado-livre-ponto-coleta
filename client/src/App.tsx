@@ -7,10 +7,12 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 
 function Router() {
-  // make sure to consider if you need authentication for certain routes
+  // Vite injects the repository path when the app is built for GitHub Pages.
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, "") || "/";
+
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
+      <Route path={basePath} component={Home} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
