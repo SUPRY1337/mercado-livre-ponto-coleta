@@ -1,29 +1,12 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 
 function Router() {
-  // Vite injects the repository path when the app is built for GitHub Pages.
-  const basePath = import.meta.env.BASE_URL.replace(/\/$/, "") || "/";
-  const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
-
-  if (currentPath === basePath) {
-    return <Home />;
-  }
-
-  return (
-    <Switch>
-      <Route path={basePath} component={Home} />
-      {basePath !== "/" && <Route path={`${basePath}/`} component={Home} />}
-      <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
-      <Route component={NotFound} />
-    </Switch>
-  );
+  // This is a single-page registration flow; rendering it directly also supports repository subpaths on GitHub Pages.
+  return <Home />;
 }
 
 // NOTE: About Theme
