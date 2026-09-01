@@ -29,3 +29,6 @@
 - [x] Tornar público o repositório `SUPRY1337/mercado-livre-ponto-coleta`
 - [x] Confirmar a publicação pública do site
 - [x] Verificar disponibilidade do endereço `pontocoletamercadolivre.manus.space` — retorno 404; domínio atual permanece ativo
+- [ ] Configurar workflow de build e publicação no GitHub Pages
+- [ ] Ajustar a base da aplicação para funcionar no caminho do repositório
+- [ ] Publicar e validar a URL do GitHub Pages
