@@ -36,7 +36,7 @@ describe("pré-cadastro de ponto de coleta", () => {
     fireEvent.click(screen.getByRole("checkbox"));
     fireEvent.click(screen.getByRole("button", { name: /Enviar pré-cadastro/i }));
     expect(screen.getByRole("heading", { name: /Seu próximo passo começa aqui/i })).toBeTruthy();
-    expect(screen.getByText(/enviaremos uma mensagem ao seu Gmail/i)).toBeTruthy();
+    expect(screen.getByText(/Iremos enviar uma mensagem ao seu Gmail com as informações necessárias/i)).toBeTruthy();
   });
 
   it("não troca para confirmação quando o consentimento está ausente", () => {

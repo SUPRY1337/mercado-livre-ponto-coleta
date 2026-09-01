@@ -56,8 +56,8 @@ export default function Home() {
             <div className="mx-auto mb-7 grid size-20 place-items-center rounded-full bg-[#e4f8ed] text-[#16824c]"><CheckCircle2 size={42} /></div>
             <p className="mb-3 text-sm font-bold uppercase tracking-[.18em] text-[#1769d1]">Cadastro recebido</p>
             <h1 className="mx-auto max-w-xl text-3xl font-black tracking-tight text-[#132b58] sm:text-5xl">Seu próximo passo começa aqui.</h1>
-            <p className="mx-auto mt-5 max-w-lg text-base leading-7 text-[#60708e] sm:text-lg">Agradecemos o interesse em ser um MERCADO LIVRE PONTO DE COLETA. Quando o fluxo seguro de e-mail estiver conectado, enviaremos uma mensagem ao seu Gmail para confirmação.</p>
-            <div className="mx-auto mt-8 flex max-w-md items-start gap-3 rounded-2xl bg-[#f4f8fd] p-4 text-left text-sm leading-6 text-[#526582]"><ShieldCheck className="mt-0.5 shrink-0 text-[#1769d1]" size={20} /><span>Nesta demonstração, nenhum CPF ou comprovante foi enviado ou armazenado.</span></div>
+            <p className="mx-auto mt-5 max-w-lg text-base leading-7 text-[#60708e] sm:text-lg">Seu cadastro foi enviado com sucesso. Iremos enviar uma mensagem ao seu Gmail com as informações necessárias para confirmação e os próximos passos.</p>
+            <div className="mx-auto mt-8 flex max-w-md items-start gap-3 rounded-2xl bg-[#f4f8fd] p-4 text-left text-sm leading-6 text-[#526582]"><ShieldCheck className="mt-0.5 shrink-0 text-[#1769d1]" size={20} /><span>As informações serão utilizadas apenas para a confirmação e para orientar os próximos passos do cadastro.</span></div>
             <a href="/" className="mt-9 inline-flex items-center gap-2 rounded-xl bg-[#123d91] px-6 py-3.5 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#0d3176] focus:outline-none focus:ring-4 focus:ring-[#1769d1]/25">Voltar ao início <ArrowRight size={18} /></a>
           </div>
         </section>

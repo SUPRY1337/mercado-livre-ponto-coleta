@@ -20,3 +20,5 @@
 - [x] Adicionar teste automatizado de bloqueio da confirmação para envios inválidos
 - [x] Cobrir em testes de UI CPF inválido, nome incompleto e ausência de comprovante
 - [x] Substituir “PontoCerto” por “MERCADO LIVRE PONTO DE COLETA” nos textos visíveis e metadados
+- [x] Ajustar a confirmação final para informar cadastro enviado e envio futuro de Gmail com informações necessárias
+- [x] Entregar o arquivo atualizado do site ao usuário
