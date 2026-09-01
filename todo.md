@@ -23,3 +23,6 @@
 - [x] Ajustar a confirmação final para informar cadastro enviado e envio futuro de Gmail com informações necessárias
 - [x] Entregar o arquivo atualizado do site ao usuário
 - [x] Remover todas as referências a “demonstração” da interface e profissionalizar os textos
+- [ ] Remover referências visuais e textuais a “Made with Manus”
+- [ ] Criar repositório privado `mercado-livre-ponto-coleta` no GitHub
+- [ ] Enviar o código atualizado para o repositório e validar o link
