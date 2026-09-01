@@ -47,7 +47,7 @@ export default function Home() {
           <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
             <a href="/" className="flex items-center gap-3" aria-label="Voltar para início">
               <span className="grid size-11 place-items-center rounded-2xl bg-[#ffe100] text-[#123d91] shadow-[0_8px_20px_rgba(255,225,0,.25)]"><Package size={24} strokeWidth={2.5} /></span>
-              <span><strong className="block text-base font-extrabold tracking-tight">PontoCerto</strong><span className="text-xs text-[#60708e]">pré-cadastro de parceiros</span></span>
+              <span><strong className="block max-w-[190px] text-[11px] font-black leading-[1.05] tracking-[.03em]">MERCADO LIVRE PONTO DE COLETA</strong><span className="text-xs text-[#60708e]">pré-cadastro de parceiros</span></span>
             </a>
           </div>
         </header>
@@ -56,7 +56,7 @@ export default function Home() {
             <div className="mx-auto mb-7 grid size-20 place-items-center rounded-full bg-[#e4f8ed] text-[#16824c]"><CheckCircle2 size={42} /></div>
             <p className="mb-3 text-sm font-bold uppercase tracking-[.18em] text-[#1769d1]">Cadastro recebido</p>
             <h1 className="mx-auto max-w-xl text-3xl font-black tracking-tight text-[#132b58] sm:text-5xl">Seu próximo passo começa aqui.</h1>
-            <p className="mx-auto mt-5 max-w-lg text-base leading-7 text-[#60708e] sm:text-lg">Agradecemos o interesse em ser um PontoCerto. Quando o fluxo seguro de e-mail estiver conectado, enviaremos uma mensagem ao seu Gmail para confirmação.</p>
+            <p className="mx-auto mt-5 max-w-lg text-base leading-7 text-[#60708e] sm:text-lg">Agradecemos o interesse em ser um MERCADO LIVRE PONTO DE COLETA. Quando o fluxo seguro de e-mail estiver conectado, enviaremos uma mensagem ao seu Gmail para confirmação.</p>
             <div className="mx-auto mt-8 flex max-w-md items-start gap-3 rounded-2xl bg-[#f4f8fd] p-4 text-left text-sm leading-6 text-[#526582]"><ShieldCheck className="mt-0.5 shrink-0 text-[#1769d1]" size={20} /><span>Nesta demonstração, nenhum CPF ou comprovante foi enviado ou armazenado.</span></div>
             <a href="/" className="mt-9 inline-flex items-center gap-2 rounded-xl bg-[#123d91] px-6 py-3.5 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#0d3176] focus:outline-none focus:ring-4 focus:ring-[#1769d1]/25">Voltar ao início <ArrowRight size={18} /></a>
           </div>
@@ -70,9 +70,9 @@ export default function Home() {
       <div className="absolute inset-x-0 top-0 -z-0 h-[510px] bg-[radial-gradient(circle_at_80%_10%,rgba(23,105,209,.15),transparent_35%),linear-gradient(135deg,#fff4a9_0%,#fffdf7_57%)]" />
       <header className="relative z-10 border-b border-[#dbe7f7]/80 bg-white/75 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
-          <a href="/" className="flex items-center gap-3" aria-label="PontoCerto início">
+          <a href="/" className="flex items-center gap-3" aria-label="MERCADO LIVRE PONTO DE COLETA — início">
             <span className="grid size-11 place-items-center rounded-2xl bg-[#ffe100] text-[#123d91] shadow-[0_8px_20px_rgba(255,225,0,.25)]"><Package size={24} strokeWidth={2.5} /></span>
-            <span><strong className="block text-base font-extrabold tracking-tight">PontoCerto</strong><span className="text-xs text-[#60708e]">pré-cadastro de parceiros</span></span>
+            <span><strong className="block max-w-[190px] text-[11px] font-black leading-[1.05] tracking-[.03em]">MERCADO LIVRE PONTO DE COLETA</strong><span className="text-xs text-[#60708e]">pré-cadastro de parceiros</span></span>
           </a>
           <span className="hidden items-center gap-2 rounded-full border border-[#dbe7f7] bg-white px-3 py-2 text-xs font-bold text-[#526582] sm:flex"><LockKeyhole size={14} className="text-[#1769d1]" /> ambiente demonstrativo</span>
         </div>
@@ -102,7 +102,7 @@ export default function Home() {
           </form>
         </div>
       </section>
-      <footer className="relative z-10 border-t border-[#dbe7f7] bg-white/60"><div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-6 text-xs text-[#71819b] sm:flex-row sm:items-center sm:justify-between lg:px-8"><span>© 2026 PontoCerto · uma experiência demonstrativa</span><span className="inline-flex items-center gap-1.5"><LockKeyhole size={13} /> seus dados não saem desta página</span></div></footer>
+      <footer className="relative z-10 border-t border-[#dbe7f7] bg-white/60"><div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-6 text-xs text-[#71819b] sm:flex-row sm:items-center sm:justify-between lg:px-8"><span>© 2026 MERCADO LIVRE PONTO DE COLETA · uma experiência demonstrativa</span><span className="inline-flex items-center gap-1.5"><LockKeyhole size={13} /> seus dados não saem desta página</span></div></footer>
     </main>
   );
 }

@@ -19,3 +19,4 @@
 - [x] Adicionar teste automatizado de fluxo do formulário válido até a confirmação
 - [x] Adicionar teste automatizado de bloqueio da confirmação para envios inválidos
 - [x] Cobrir em testes de UI CPF inválido, nome incompleto e ausência de comprovante
+- [x] Substituir “PontoCerto” por “MERCADO LIVRE PONTO DE COLETA” nos textos visíveis e metadados
