@@ -13,6 +13,7 @@ function Router() {
   return (
     <Switch>
       <Route path={basePath} component={Home} />
+      {basePath !== "/" && <Route path={`${basePath}/`} component={Home} />}
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

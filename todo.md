@@ -33,3 +33,4 @@
 - [x] Ajustar a base da aplicação para funcionar no caminho do repositório
 - [x] Publicar e validar a URL do GitHub Pages
 - [ ] Corrigir o roteamento da aplicação no subdiretório do GitHub Pages para eliminar o 404
+- [ ] Aceitar a barra final na rota do GitHub Pages e eliminar a tela interna 404
