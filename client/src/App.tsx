@@ -9,6 +9,11 @@ import Home from "./pages/Home";
 function Router() {
   // Vite injects the repository path when the app is built for GitHub Pages.
   const basePath = import.meta.env.BASE_URL.replace(/\/$/, "") || "/";
+  const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+
+  if (currentPath === basePath) {
+    return <Home />;
+  }
 
   return (
     <Switch>
