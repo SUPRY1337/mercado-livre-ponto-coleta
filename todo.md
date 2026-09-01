@@ -1,0 +1,21 @@
+# Project TODO
+
+- [x] Criar cabeçalho e identidade visual independente em amarelo e azul, inspirada em entregas e pontos de coleta
+- [x] Implementar página de pré-cadastro responsiva para celular, tablet e desktop
+- [x] Garantir navegação por teclado, foco visível, labels e mensagens acessíveis
+- [x] Implementar campo de nome completo com validação
+- [x] Implementar CPF com máscara visual e validação de dígitos
+- [x] Implementar upload demonstrativo de comprovante de endereço sem envio ou armazenamento
+- [x] Exibir aviso de privacidade antes do envio
+- [x] Exigir consentimento obrigatório para enviar o formulário
+- [x] Implementar envio simulado sem transmitir ou persistir dados pessoais
+- [x] Exibir tela de confirmação informando que o Gmail será usado quando o fluxo seguro de e-mail for conectado
+- [x] Escrever testes Vitest para validação de CPF e regras do fluxo
+- [x] Executar verificação TypeScript, testes e revisão visual responsiva
+- [x] Refinar a identidade visual com linguagem própria de rotas, mapas, bairros e pontos de coleta
+- [x] Adicionar testes Vitest para consentimento, comprovante, nome completo e transição de confirmação
+- [x] Aplicar o sistema visual de rotas e pontos de coleta também nos detalhes do formulário e blocos de apoio
+- [x] Adicionar uma verificação automatizada da transição do estado do formulário para a confirmação
+- [x] Adicionar teste automatizado de fluxo do formulário válido até a confirmação
+- [x] Adicionar teste automatizado de bloqueio da confirmação para envios inválidos
+- [x] Cobrir em testes de UI CPF inválido, nome incompleto e ausência de comprovante
