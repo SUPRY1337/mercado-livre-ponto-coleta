@@ -34,3 +34,10 @@
 - [x] Publicar e validar a URL do GitHub Pages
 - [x] Corrigir o roteamento da aplicação no subdiretório do GitHub Pages para eliminar o 404
 - [x] Aceitar a barra final na rota do GitHub Pages e eliminar a tela interna 404
+- [x] Rebranding completo para OPTACRED Empréstimo em textos, identidade e metadados
+- [x] Revisar a comunicação para um tom profissional e responsável no segmento financeiro
+- [x] Sincronizar o projeto atualizado com o repositório público do GitHub
+- [x] Republicar e validar o GitHub Pages com a nova marca
+- [ ] Enviar o rebranding OPTACRED ao repositório público com commit e push verificáveis
+- [ ] Executar e validar a publicação do GitHub Pages após o push
+- [ ] Revisar visualmente a URL pública com a nova marca OPTACRED
