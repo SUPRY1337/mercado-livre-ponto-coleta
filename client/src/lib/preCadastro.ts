@@ -25,9 +25,9 @@ export function isValidCpf(value: string) {
   return digit === Number(cpf[10]);
 }
 
-export function canSubmitPreCadastro({ name, cpf, fileName, consent }: { name: string; cpf: string; fileName: string; consent: boolean }) {
+export function canSubmitPreCadastro({ name, cpf, fileName, consent }: { name: string; cpf: string; fileName?: string; consent: boolean }) {
   const hasFullName = name.trim().split(/\s+/).filter(Boolean).length >= 2;
-  return hasFullName && isValidCpf(cpf) && Boolean(fileName) && consent;
+  return hasFullName && isValidCpf(cpf) && consent;
 }
 
 export function getPostSubmitState(canSubmit: boolean) {
