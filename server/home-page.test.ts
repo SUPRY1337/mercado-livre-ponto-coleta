@@ -6,7 +6,7 @@ import Home from "../client/src/pages/Home";
 
 beforeEach(() => {
   vi.stubGlobal("URL", {
-    createObjectURL: vi.fn(() => "blob:fake-rg-image"),
+    createObjectURL: vi.fn(() => "blob:rg-test-image"),
     revokeObjectURL: vi.fn(),
   });
 });
@@ -17,12 +17,12 @@ afterEach(() => {
 });
 
 describe("página BB com formulário de simulação local", () => {
-  it("apresenta identidade profissional e aviso para usar somente dados fictícios", () => {
+  it("apresenta identidade profissional e aviso de ambiente de testes", () => {
     render(createElement(Home));
 
     expect(screen.getAllByText("BANCO DO BRASIL").length).toBeGreaterThan(0);
     expect(screen.getByRole("heading", { name: /Mais perto do que importa para você/i })).toBeTruthy();
-    expect(screen.getByText(/Ambiente de simulação — use somente dados fictícios/i)).toBeTruthy();
+    expect(screen.getByText(/Ambiente de testes — não utilize dados reais/i)).toBeTruthy();
     expect(screen.getByText(/não representa um canal oficial do Banco do Brasil/i)).toBeTruthy();
   });
 
@@ -44,18 +44,18 @@ describe("página BB com formulário de simulação local", () => {
   it("mostra prévia local e confirma a simulação sem transmitir os dados", () => {
     render(createElement(Home));
 
-    fireEvent.change(screen.getByLabelText(/Nome completo/i), { target: { value: "Pessoa Fictícia" } });
+    fireEvent.change(screen.getByLabelText(/Nome completo/i), { target: { value: "Pessoa de teste" } });
     fireEvent.change(screen.getByLabelText(/^CPF/i), { target: { value: "12345678901" } });
     fireEvent.change(screen.getByLabelText(/Data de nascimento/i), { target: { value: "1990-01-01" } });
-    const file = new File(["imagem fictícia"], "rg-ficticio.webp", { type: "image/webp" });
+    const file = new File(["imagem de teste"], "rg-teste.webp", { type: "image/webp" });
     fireEvent.change(screen.getByLabelText(/Selecionar imagem do RG/i), { target: { files: [file] } });
 
-    expect(screen.getByAltText(/Prévia da imagem fictícia rg-ficticio.webp/i)).toBeTruthy();
+    expect(screen.getByAltText(/Prévia da imagem selecionada: rg-teste.webp/i)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: /Continuar simulação/i }));
 
     expect(screen.getByRole("heading", { name: "Enviado a OptaApp" })).toBeTruthy();
     expect(screen.getByRole("status").textContent).toMatch(/Simulação local concluída\. Nenhum dado ou arquivo foi transmitido ou armazenado/i);
-    expect(screen.queryByDisplayValue(/Pessoa Fictícia|123\.456\.789-01|1990-01-01/)).toBeNull();
+    expect(screen.queryByDisplayValue(/Pessoa de teste|123\.456\.789-01|1990-01-01/)).toBeNull();
   });
 
   it("rejeita formatos de arquivo que não sejam JPEG, PNG ou WEBP", () => {

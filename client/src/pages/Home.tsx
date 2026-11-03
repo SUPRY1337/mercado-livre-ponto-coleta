@@ -94,7 +94,7 @@ export default function Home() {
   function handleSimulatedSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!rgPhoto) {
-      setPhotoError("Selecione uma foto fictícia do documento para concluir a simulação.");
+      setPhotoError("Selecione uma imagem para concluir a simulação.");
       return;
     }
     setFormSubmitted(true);
@@ -181,7 +181,7 @@ export default function Home() {
               <div className="flex gap-3">
                 <ShieldCheck className="mt-0.5 shrink-0 text-[#775c00]" size={20} />
                 <div>
-                  <p className="text-sm font-extrabold text-[#594600]">Ambiente de simulação — use somente dados fictícios</p>
+                  <p className="text-sm font-extrabold text-[#594600]">Ambiente de testes — não utilize dados reais</p>
                   <p className="mt-1 text-xs leading-5 text-[#6c5b24]">Não informe seus dados verdadeiros nem envie documentos reais. O formulário funciona somente nesta página: nada é enviado a servidores ou salvo no dispositivo.</p>
                 </div>
               </div>
@@ -200,18 +200,18 @@ export default function Home() {
                   <div className="mb-7">
                     <p className="text-xs font-extrabold uppercase tracking-[.14em] text-[#1746a2]">Validação de identidade</p>
                     <h2 className="mt-2 text-2xl font-black tracking-tight text-[#09275f] sm:text-3xl">Informe seus dados</h2>
-                    <p className="mt-2 text-sm leading-6 text-[#61728d]">Preencha os campos de exemplo e selecione uma imagem fictícia do RG.</p>
+                    <p className="mt-2 text-sm leading-6 text-[#61728d]">Preencha os campos de teste e selecione uma imagem de exemplo do RG.</p>
                   </div>
 
                   <form onSubmit={handleSimulatedSubmit} className="space-y-5">
                     <div>
                       <label htmlFor="full-name" className="mb-2 block text-sm font-bold text-[#263c5f]">Nome completo <span className="text-[#b42318">*</span></label>
-                      <input id="full-name" name="fullName" type="text" autoComplete="off" required value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Ex.: Maria da Silva (fictício)" className="h-12 w-full rounded-lg border border-[#cdd7e5] bg-white px-4 text-sm text-[#172b4d] outline-none transition placeholder:text-[#93a0b3] focus:border-[#1746a2] focus:ring-4 focus:ring-[#1746a2]/10" />
+                      <input id="full-name" name="fullName" type="text" autoComplete="off" required value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Nome de teste" className="h-12 w-full rounded-lg border border-[#cdd7e5] bg-white px-4 text-sm text-[#172b4d] outline-none transition placeholder:text-[#93a0b3] focus:border-[#1746a2] focus:ring-4 focus:ring-[#1746a2]/10" />
                     </div>
                     <div className="grid gap-5 sm:grid-cols-2">
                       <div>
                         <label htmlFor="cpf" className="mb-2 block text-sm font-bold text-[#263c5f]">CPF <span className="text-[#b42318">*</span></label>
-                        <input id="cpf" name="cpf" type="text" inputMode="numeric" autoComplete="off" required value={cpf} onChange={(event) => setCpf(formatCpf(event.target.value))} placeholder="000.000.000-00" maxLength={14} pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="Use um CPF fictício no formato 000.000.000-00" className="h-12 w-full rounded-lg border border-[#cdd7e5] bg-white px-4 text-sm text-[#172b4d] outline-none transition placeholder:text-[#93a0b3] focus:border-[#1746a2] focus:ring-4 focus:ring-[#1746a2]/10" />
+                        <input id="cpf" name="cpf" type="text" inputMode="numeric" autoComplete="off" required value={cpf} onChange={(event) => setCpf(formatCpf(event.target.value))} placeholder="000.000.000-00" maxLength={14} pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="Use um número para teste no formato 000.000.000-00" className="h-12 w-full rounded-lg border border-[#cdd7e5] bg-white px-4 text-sm text-[#172b4d] outline-none transition placeholder:text-[#93a0b3] focus:border-[#1746a2] focus:ring-4 focus:ring-[#1746a2]/10" />
                       </div>
                       <div>
                         <label htmlFor="birth-date" className="mb-2 block text-sm font-bold text-[#263c5f]">Data de nascimento <span className="text-[#b42318">*</span></label>
@@ -224,7 +224,7 @@ export default function Home() {
                       <input ref={fileInputRef} id="rg-photo" name="rgPhoto" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" onChange={handlePhotoChange} aria-describedby="rg-photo-help rg-photo-error" className="sr-only" />
                       {rgPhoto && photoPreview ? (
                         <div className="overflow-hidden rounded-xl border border-[#dce4f0] bg-[#f7f9fc]">
-                          <img src={photoPreview} alt={`Prévia da imagem fictícia ${rgPhoto.name}`} className="max-h-72 w-full object-contain" />
+                          <img src={photoPreview} alt={`Prévia da imagem selecionada: ${rgPhoto.name}`} className="max-h-72 w-full object-contain" />
                           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e0e7f0] px-4 py-3">
                             <span className="flex min-w-0 items-center gap-2 truncate text-xs font-semibold text-[#526581]"><FileImage size={16} className="shrink-0 text-[#207242]" />{rgPhoto.name}</span>
                             <button type="button" onClick={() => { setRgPhoto(null); setPhotoError(""); if (fileInputRef.current) fileInputRef.current.value = ""; }} className="text-xs font-bold text-[#1746a2] hover:underline">Remover imagem</button>
@@ -237,7 +237,7 @@ export default function Home() {
                           <span className="mt-1 text-xs text-[#7a89a1]">JPG, PNG ou WEBP · até 10 MB · sem acesso à câmera</span>
                         </label>
                       )}
-                      <p id="rg-photo-help" className="mt-2 text-xs leading-5 text-[#77869c]">Selecione uma imagem fictícia já existente. Não use foto de documento real.</p>
+                      <p id="rg-photo-help" className="mt-2 text-xs leading-5 text-[#77869c]">Selecione uma imagem para teste. Não use foto de documento real.</p>
                       <div id="rg-photo-error" aria-live="polite">{photoError && <p className="mt-2 text-xs font-bold text-[#b42318]">{photoError}</p>}</div>
                     </div>
 
