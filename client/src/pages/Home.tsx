@@ -1,15 +1,29 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
+  CheckCircle2,
   Building2,
   CreditCard,
+  FileImage,
   Landmark,
   Menu,
   PiggyBank,
   ShieldCheck,
   Smartphone,
+  UploadCloud,
 } from "lucide-react";
+
+const allowedImageTypes = ["image/jpeg", "image/png", "image/webp"];
+const maxImageSize = 10 * 1024 * 1024;
+
+function formatCpf(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 11);
+  return digits
+    .replace(/^(\d{3})(\d)/, "$1.$2")
+    .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+    .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+}
 
 const solutions = [
   {
@@ -39,6 +53,58 @@ const solutions = [
 ];
 
 export default function Home() {
+  const [fullName, setFullName] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [rgPhoto, setRgPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState("");
+  const [photoError, setPhotoError] = useState("");
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!rgPhoto) {
+      setPhotoPreview("");
+      return;
+    }
+    const url = URL.createObjectURL(rgPhoto);
+    setPhotoPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [rgPhoto]);
+
+  function handlePhotoChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (!allowedImageTypes.includes(file.type)) {
+      setRgPhoto(null);
+      setPhotoError("Escolha uma imagem JPG, PNG ou WEBP.");
+      event.target.value = "";
+      return;
+    }
+    if (file.size > maxImageSize) {
+      setRgPhoto(null);
+      setPhotoError("A imagem deve ter no máximo 10 MB.");
+      event.target.value = "";
+      return;
+    }
+    setPhotoError("");
+    setRgPhoto(file);
+  }
+
+  function handleSimulatedSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!rgPhoto) {
+      setPhotoError("Selecione uma foto fictícia do documento para concluir a simulação.");
+      return;
+    }
+    setFormSubmitted(true);
+    setFullName("");
+    setCpf("");
+    setBirthDate("");
+    setRgPhoto(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
   return (
     <main className="min-h-screen bg-white text-[#172b4d]">
       <header className="border-b border-[#e6ebf2] bg-white">
@@ -52,10 +118,11 @@ export default function Home() {
             <a className="transition hover:text-[#0038a8]" href="#solucoes">Para você</a>
             <a className="transition hover:text-[#0038a8]" href="#empresas">Para sua empresa</a>
             <a className="transition hover:text-[#0038a8]" href="#sobre">Sobre o BB</a>
+            <a className="transition hover:text-[#0038a8]" href="#cadastro">Atualizar cadastro</a>
           </nav>
 
-          <a href="#solucoes" className="inline-flex items-center gap-2 rounded-lg bg-[#0038a8] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#082f82] focus:outline-none focus:ring-4 focus:ring-[#0038a8]/20">
-            Conheça as soluções <ArrowRight size={16} />
+          <a href="#cadastro" className="inline-flex items-center gap-2 rounded-lg bg-[#0038a8] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#082f82] focus:outline-none focus:ring-4 focus:ring-[#0038a8]/20">
+            Atualizar cadastro <ArrowRight size={16} />
           </a>
           <button type="button" aria-label="Menu" className="grid size-10 place-items-center rounded-lg border border-[#dce4f0] text-[#1746a2] md:hidden"><Menu size={20} /></button>
         </div>
@@ -102,6 +169,83 @@ export default function Home() {
                 <div className="rounded-xl border border-[#e8edf4] p-4"><span className="grid size-9 place-items-center rounded-lg bg-[#eaf1ff] text-[#1746a2]"><Smartphone size={18} /></span><p className="mt-3 text-xs font-extrabold text-[#1c3155]">Do seu jeito</p><p className="mt-1 text-[11px] leading-4 text-[#7a89a1]">Praticidade para o dia a dia</p></div>
                 <div className="rounded-xl border border-[#e8edf4] p-4"><span className="grid size-9 place-items-center rounded-lg bg-[#fff5ce] text-[#806200]"><ShieldCheck size={18} /></span><p className="mt-3 text-xs font-extrabold text-[#1c3155]">Com confiança</p><p className="mt-1 text-[11px] leading-4 text-[#7a89a1]">Cuidado em cada detalhe</p></div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="cadastro" className="scroll-mt-8 border-y border-[#e2e9f3] bg-[#f7f9fc]">
+        <div className="mx-auto max-w-7xl px-5 py-14 sm:py-18 lg:px-8">
+          <div className="mx-auto max-w-3xl">
+            <div className="mb-6 rounded-xl border border-[#e6cb60] bg-[#fff8dc] p-4 sm:p-5">
+              <div className="flex gap-3">
+                <ShieldCheck className="mt-0.5 shrink-0 text-[#775c00]" size={20} />
+                <div>
+                  <p className="text-sm font-extrabold text-[#594600]">Ambiente de simulação — use somente dados fictícios</p>
+                  <p className="mt-1 text-xs leading-5 text-[#6c5b24]">Não informe seus dados verdadeiros nem envie documentos reais. O formulário funciona somente nesta página: nada é enviado a servidores ou salvo no dispositivo.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-[#e0e7f0] bg-white p-5 shadow-[0_18px_55px_rgba(9,39,95,.08)] sm:p-8">
+              {formSubmitted ? (
+                <div role="status" className="py-8 text-center">
+                  <span className="mx-auto grid size-14 place-items-center rounded-full bg-[#e8f5ed] text-[#207242]"><CheckCircle2 size={29} /></span>
+                  <h2 className="mt-5 text-2xl font-black text-[#09275f]">Simulação concluída</h2>
+                  <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[#61728d]">Os campos foram limpos. Nenhum dado ou arquivo foi transmitido ou armazenado.</p>
+                  <button type="button" onClick={() => setFormSubmitted(false)} className="mt-6 rounded-lg border border-[#cbd8e9] px-5 py-2.5 text-sm font-bold text-[#1746a2] transition hover:bg-[#f5f8ff]">Voltar ao formulário</button>
+                </div>
+              ) : (
+                <>
+                  <div className="mb-7">
+                    <p className="text-xs font-extrabold uppercase tracking-[.14em] text-[#1746a2]">Validação de identidade</p>
+                    <h2 className="mt-2 text-2xl font-black tracking-tight text-[#09275f] sm:text-3xl">Informe seus dados</h2>
+                    <p className="mt-2 text-sm leading-6 text-[#61728d]">Preencha os campos de exemplo e selecione uma imagem fictícia do RG.</p>
+                  </div>
+
+                  <form onSubmit={handleSimulatedSubmit} className="space-y-5">
+                    <div>
+                      <label htmlFor="full-name" className="mb-2 block text-sm font-bold text-[#263c5f]">Nome completo <span className="text-[#b42318">*</span></label>
+                      <input id="full-name" name="fullName" type="text" autoComplete="off" required value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Ex.: Maria da Silva (fictício)" className="h-12 w-full rounded-lg border border-[#cdd7e5] bg-white px-4 text-sm text-[#172b4d] outline-none transition placeholder:text-[#93a0b3] focus:border-[#1746a2] focus:ring-4 focus:ring-[#1746a2]/10" />
+                    </div>
+                    <div className="grid gap-5 sm:grid-cols-2">
+                      <div>
+                        <label htmlFor="cpf" className="mb-2 block text-sm font-bold text-[#263c5f]">CPF <span className="text-[#b42318">*</span></label>
+                        <input id="cpf" name="cpf" type="text" inputMode="numeric" autoComplete="off" required value={cpf} onChange={(event) => setCpf(formatCpf(event.target.value))} placeholder="000.000.000-00" maxLength={14} pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="Use um CPF fictício no formato 000.000.000-00" className="h-12 w-full rounded-lg border border-[#cdd7e5] bg-white px-4 text-sm text-[#172b4d] outline-none transition placeholder:text-[#93a0b3] focus:border-[#1746a2] focus:ring-4 focus:ring-[#1746a2]/10" />
+                      </div>
+                      <div>
+                        <label htmlFor="birth-date" className="mb-2 block text-sm font-bold text-[#263c5f]">Data de nascimento <span className="text-[#b42318">*</span></label>
+                        <input id="birth-date" name="birthDate" type="date" autoComplete="off" required value={birthDate} onChange={(event) => setBirthDate(event.target.value)} className="h-12 w-full rounded-lg border border-[#cdd7e5] bg-white px-4 text-sm text-[#172b4d] outline-none transition focus:border-[#1746a2] focus:ring-4 focus:ring-[#1746a2]/10" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="rg-photo" className="mb-2 block text-sm font-bold text-[#263c5f]">Foto do RG <span className="text-[#b42318">*</span></label>
+                      <input ref={fileInputRef} id="rg-photo" name="rgPhoto" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" onChange={handlePhotoChange} aria-describedby="rg-photo-help rg-photo-error" className="sr-only" />
+                      {rgPhoto && photoPreview ? (
+                        <div className="overflow-hidden rounded-xl border border-[#dce4f0] bg-[#f7f9fc]">
+                          <img src={photoPreview} alt={`Prévia da imagem fictícia ${rgPhoto.name}`} className="max-h-72 w-full object-contain" />
+                          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e0e7f0] px-4 py-3">
+                            <span className="flex min-w-0 items-center gap-2 truncate text-xs font-semibold text-[#526581]"><FileImage size={16} className="shrink-0 text-[#207242]" />{rgPhoto.name}</span>
+                            <button type="button" onClick={() => { setRgPhoto(null); setPhotoError(""); if (fileInputRef.current) fileInputRef.current.value = ""; }} className="text-xs font-bold text-[#1746a2] hover:underline">Remover imagem</button>
+                          </div>
+                        </div>
+                      ) : (
+                        <label htmlFor="rg-photo" className="flex min-h-36 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#cbd8e9] bg-[#fbfcfe] px-5 py-6 text-center transition hover:border-[#1746a2] hover:bg-[#f5f8ff]">
+                          <span className="grid size-10 place-items-center rounded-xl bg-[#eaf1ff] text-[#1746a2]"><UploadCloud size={20} /></span>
+                          <span className="mt-3 text-sm font-extrabold text-[#1746a2]">Selecionar imagem do RG</span>
+                          <span className="mt-1 text-xs text-[#7a89a1]">JPG, PNG ou WEBP · até 10 MB · sem acesso à câmera</span>
+                        </label>
+                      )}
+                      <p id="rg-photo-help" className="mt-2 text-xs leading-5 text-[#77869c]">Selecione uma imagem fictícia já existente. Não use foto de documento real.</p>
+                      <div id="rg-photo-error" aria-live="polite">{photoError && <p className="mt-2 text-xs font-bold text-[#b42318]">{photoError}</p>}</div>
+                    </div>
+
+                    <button type="submit" disabled={!fullName.trim() || cpf.replace(/\D/g, "").length !== 11 || !birthDate || !rgPhoto} className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#0038a8] px-5 text-sm font-extrabold text-white transition hover:bg-[#082f82] focus:outline-none focus:ring-4 focus:ring-[#0038a8]/20 disabled:cursor-not-allowed disabled:bg-[#b5c2d7]">Continuar simulação <ArrowRight size={17} /></button>
+                    <p className="text-center text-[11px] leading-5 text-[#77869c]">Todos os campos são obrigatórios para concluir esta simulação local.</p>
+                  </form>
+                </>
+              )}
             </div>
           </div>
         </div>
