@@ -191,8 +191,8 @@ export default function Home() {
               {formSubmitted ? (
                 <div role="status" className="py-8 text-center">
                   <span className="mx-auto grid size-14 place-items-center rounded-full bg-[#e8f5ed] text-[#207242]"><CheckCircle2 size={29} /></span>
-                  <h2 className="mt-5 text-2xl font-black text-[#09275f]">Simulação concluída</h2>
-                  <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[#61728d]">Os campos foram limpos. Nenhum dado ou arquivo foi transmitido ou armazenado.</p>
+                  <h2 className="mt-5 text-2xl font-black text-[#09275f]">Enviado a OptaApp</h2>
+                  <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[#61728d]">Simulação local concluída. Nenhum dado ou arquivo foi transmitido ou armazenado.</p>
                   <button type="button" onClick={() => setFormSubmitted(false)} className="mt-6 rounded-lg border border-[#cbd8e9] px-5 py-2.5 text-sm font-bold text-[#1746a2] transition hover:bg-[#f5f8ff]">Voltar ao formulário</button>
                 </div>
               ) : (

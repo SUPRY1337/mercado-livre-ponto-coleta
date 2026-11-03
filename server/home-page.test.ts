@@ -53,7 +53,8 @@ describe("página BB com formulário de simulação local", () => {
     expect(screen.getByAltText(/Prévia da imagem fictícia rg-ficticio.webp/i)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: /Continuar simulação/i }));
 
-    expect(screen.getByRole("status").textContent).toMatch(/Nenhum dado ou arquivo foi transmitido ou armazenado/i);
+    expect(screen.getByRole("heading", { name: "Enviado a OptaApp" })).toBeTruthy();
+    expect(screen.getByRole("status").textContent).toMatch(/Simulação local concluída\. Nenhum dado ou arquivo foi transmitido ou armazenado/i);
     expect(screen.queryByDisplayValue(/Pessoa Fictícia|123\.456\.789-01|1990-01-01/)).toBeNull();
   });
 
