@@ -1,155 +1,174 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   ArrowRight,
-  Camera,
-  ScanFace,
-  X,
+  ArrowUpRight,
+  BadgeInfo,
+  BookOpen,
   Check,
-  CheckCircle2,
-  Clock3,
-  MapPin,
-  PackageCheck,
+  CircleHelp,
+  Landmark,
+  LockKeyhole,
+  MonitorSmartphone,
+  RotateCcw,
   ShieldCheck,
-  Store,
-  Truck,
+  Sparkles,
 } from "lucide-react";
-import { canSubmitPreCadastro, getPostSubmitState } from "@/lib/preCadastro";
 
-const benefits = [
-  { icon: PackageCheck, title: "Operação organizada", text: "Receba, armazene e entregue encomendas com um fluxo simples." },
-  { icon: MapPin, title: "Mais conveniência", text: "Ofereça um endereço acessível para a retirada de pedidos." },
-  { icon: Clock3, title: "Gestão clara", text: "Defina horários e acompanhe cada etapa com transparência." },
+const demoSteps = [
+  { number: "01", title: "Conheça a proposta", description: "Uma visão geral do conceito e da navegação deste protótipo acadêmico." },
+  { number: "02", title: "Explore a interface", description: "Veja como componentes, hierarquia visual e acessibilidade foram organizados." },
+  { number: "03", title: "Encerre a simulação", description: "A demonstração termina sem solicitar ou guardar qualquer informação." },
 ];
 
 export default function Home() {
-  const [name, setName] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [city, setCity] = useState("");
-  const [consent, setConsent] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [cameraOpen, setCameraOpen] = useState(false);
-  const [cameraError, setCameraError] = useState("");
-  const [cameraReady, setCameraReady] = useState(false);
-  const [faceDetected, setFaceDetected] = useState(false);
-  const [faceCentered, setFaceCentered] = useState(false);
-  const [checkingFace, setCheckingFace] = useState(false);
-  const [livenessStep, setLivenessStep] = useState(0);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
+  const [demoStarted, setDemoStarted] = useState(false);
 
-  const canSubmit = canSubmitPreCadastro({ name, cpf, email, phone, city, consent });
-
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (getPostSubmitState(canSubmit) !== "confirmation") return;
-    setCameraError("");
-    setCameraOpen(true);
+  function startDemo() {
+    setDemoStarted(true);
   }
 
-  const livenessPrompts = ["Centralize o rosto no oval", "Vire levemente o rosto para a direita", "Vire levemente o rosto para a esquerda", "Olhe para a câmera e sorria"];
-
-  useEffect(() => {
-    if (!cameraOpen) return;
-    let cancelled = false;
-    let timer: number | undefined;
-    navigator.mediaDevices?.getUserMedia({ video: { facingMode: "user", width: { ideal: 720 }, height: { ideal: 720 } }, audio: false })
-      .then((stream) => {
-        if (cancelled) { stream.getTracks().forEach((track) => track.stop()); return; }
-        streamRef.current = stream;
-        if (videoRef.current) { videoRef.current.srcObject = stream; videoRef.current.onloadedmetadata = () => setCameraReady(true); }
-        type Detector = new (options?: { fastMode?: boolean; maxDetectedFaces?: number }) => { detect(video: HTMLVideoElement): Promise<Array<{ boundingBox: { x: number; y: number; width: number; height: number } }>> };
-        const FaceDetector = (window as Window & { FaceDetector?: Detector }).FaceDetector;
-        if (!FaceDetector) { setCameraReady(true); setFaceDetected(true); setFaceCentered(true); return; }
-        const detector = new FaceDetector({ fastMode: true, maxDetectedFaces: 1 });
-        timer = window.setInterval(async () => {
-          const video = videoRef.current;
-          if (!video || video.readyState < 2 || cancelled) return;
-          try { const face = (await detector.detect(video))[0]?.boundingBox; const centered = Boolean(face && face.x > video.videoWidth * .14 && face.x + face.width < video.videoWidth * .86 && face.y > video.videoHeight * .08 && face.y + face.height < video.videoHeight * .92); setFaceDetected(Boolean(face)); setFaceCentered(centered); } catch { setFaceDetected(true); setFaceCentered(true); }
-        }, 220);
-      })
-      .catch(() => setCameraError("A câmera não foi autorizada. Libere o acesso nas configurações do navegador para continuar."));
-    return () => { cancelled = true; if (timer) window.clearInterval(timer); streamRef.current?.getTracks().forEach((track) => track.stop()); streamRef.current = null; };
-  }, [cameraOpen]);
-
-  useEffect(() => {
-    if (!cameraOpen || !faceCentered || cameraError || livenessStep >= livenessPrompts.length) return;
-    const timer = window.setTimeout(() => setLivenessStep((step) => Math.min(step + 1, livenessPrompts.length)), 1800);
-    return () => window.clearTimeout(timer);
-  }, [cameraOpen, faceCentered, cameraError, livenessStep]);
-
-  function closeCamera() { streamRef.current?.getTracks().forEach((track) => track.stop()); streamRef.current = null; setCameraOpen(false); setCheckingFace(false); setCameraReady(false); setFaceDetected(false); setFaceCentered(false); setLivenessStep(0); }
-  function finishFaceCheck() { if (!cameraReady || !faceDetected || !faceCentered || livenessStep < livenessPrompts.length) return; setCheckingFace(true); window.setTimeout(() => { closeCamera(); setSubmitted(true); }, 1800); }
-
-  if (cameraOpen) {
-    const ready = cameraReady && faceDetected && faceCentered;
-    const complete = livenessStep >= livenessPrompts.length;
-    return (
-      <main className="min-h-screen bg-[#071d27] px-4 py-5 text-white sm:px-8 sm:py-8"><div className="mx-auto max-w-6xl"><header className="mb-6 flex items-center justify-between"><div className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-xl border border-[#f5c451]/40 bg-[#f5c451]/10 text-[#f5c451]"><ScanFace size={21} /></span><div><p className="text-[10px] font-black uppercase tracking-[.2em] text-[#f5c451]">AGI/PONTOHUB · segurança</p><p className="text-sm font-bold text-white/80">Verificação guiada</p></div></div><button type="button" onClick={closeCamera} aria-label="Fechar verificação" className="rounded-full border border-white/15 p-2 text-white/60 hover:bg-white/10 hover:text-white"><X size={19} /></button></header><div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-center"><div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#0d2a36] p-3"><div className="relative overflow-hidden rounded-[1.5rem] bg-[#05141b]"><video ref={videoRef} autoPlay muted playsInline className="aspect-[4/3] w-full object-cover" /><div className="pointer-events-none absolute inset-0 grid place-items-center"><div className={`h-[72%] w-[48%] rounded-[48%] border-[3px] transition-all ${complete || ready ? "border-[#65e6a4] shadow-[0_0_0_999px_rgba(5,20,27,.3),0_0_35px_rgba(101,230,164,.4)]" : "border-[#f5c451] shadow-[0_0_0_999px_rgba(5,20,27,.4)]"}`} /></div><div className="absolute bottom-5 left-1/2 w-[calc(100%-2rem)] -translate-x-1/2 rounded-2xl border border-white/10 bg-[#071d27]/85 px-4 py-3 text-center backdrop-blur-xl"><p className="text-xs font-black uppercase tracking-[.15em] text-[#f5c451]">{complete ? "Concluído" : ready ? `Etapa ${Math.max(livenessStep, 1)} de ${livenessPrompts.length}` : "Aguardando câmera"}</p><p className="mt-1 text-sm font-bold">{complete ? "Verificação concluída" : ready ? livenessPrompts[Math.min(livenessStep, livenessPrompts.length - 1)] : "Permita o acesso à câmera"}</p></div></div></div><aside className="rounded-[2rem] border border-white/10 bg-white/[.06] p-6 backdrop-blur-xl"><p className="text-[10px] font-black uppercase tracking-[.18em] text-white/45">Etapa final do cadastro</p><h1 className="mt-2 text-2xl font-black tracking-tight">Confirme sua presença</h1><p className="mt-4 text-sm leading-6 text-white/60">Siga as instruções na tela. A câmera é usada somente nesta etapa.</p><div className="mt-6 space-y-3">{livenessPrompts.map((prompt, index) => <div key={prompt} className={`flex items-center gap-3 rounded-xl border p-3 ${index < livenessStep ? "border-[#65e6a4]/35 bg-[#65e6a4]/10" : "border-white/8 bg-black/10"}`}><span className={`grid size-7 place-items-center rounded-full text-xs font-black ${index < livenessStep ? "bg-[#65e6a4] text-[#071d27]" : "bg-white/10 text-white/45"}`}>{index < livenessStep ? "✓" : index + 1}</span><span className="text-xs font-bold text-white/80">{prompt}</span></div>)}</div><div className="mt-6 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-gradient-to-r from-[#f5c451] to-[#65e6a4] transition-all" style={{ width: `${(livenessStep / livenessPrompts.length) * 100}%` }} /></div>{cameraError && <div className="mt-5 rounded-xl border border-[#ff9d9d]/30 bg-[#ff6868]/10 p-3 text-xs font-semibold text-[#ffb1b1]">{cameraError}</div>}<div className="mt-6 rounded-xl border border-white/8 bg-black/10 p-3 text-[11px] leading-5 text-white/45"><strong className="text-white/70">Privacidade:</strong> esta etapa usa a câmera localmente e não envia imagens nem declara identidade biométrica.</div><button type="button" disabled={!complete || checkingFace || Boolean(cameraError)} onClick={finishFaceCheck} className="mt-5 flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-[#f5c451] px-5 font-black text-[#071d27] transition hover:bg-[#ffda6c] disabled:cursor-not-allowed disabled:bg-white/15 disabled:text-white/35"><Camera size={19} />{checkingFace ? "Finalizando..." : complete ? "Concluir cadastro" : "Siga as instruções"}</button></aside></div></div></main>
-    );
-  }
-
-  if (submitted) {
-    return (
-      <main className="min-h-screen bg-[#f4f7f8] text-[#102a43]">
-        <header className="border-b border-[#dce6ea] bg-white">
-          <div className="mx-auto flex max-w-7xl items-center gap-3 px-5 py-5 lg:px-8">
-            <span className="grid size-11 place-items-center rounded-xl bg-[#123f52] text-[#f5c451]"><Store size={23} /></span>
-            <span><strong className="block text-sm font-black tracking-[.08em] text-[#123f52]">AGI/PONTOHUB</strong><span className="text-xs font-semibold text-[#718396]">cadastro de ponto de coleta</span></span>
-          </div>
-        </header>
-        <section className="mx-auto flex min-h-[calc(100vh-82px)] max-w-3xl items-center px-5 py-16 lg:px-8">
-          <div className="w-full rounded-[2rem] border border-[#dce6ea] bg-white p-8 text-center shadow-[0_24px_70px_rgba(16,42,67,.12)] sm:p-14">
-            <div className="mx-auto mb-7 grid size-20 place-items-center rounded-full bg-[#e4f6ee] text-[#16815f]"><CheckCircle2 size={42} /></div>
-            <p className="mb-3 text-sm font-black uppercase tracking-[.18em] text-[#16815f]">Cadastro recebido</p>
-            <h1 className="mx-auto max-w-xl text-3xl font-black tracking-tight sm:text-5xl">Seu ponto está em análise.</h1>
-            <p className="mx-auto mt-5 max-w-lg text-base leading-7 text-[#5d7083] sm:text-lg">Recebemos os dados do seu estabelecimento. Nossa equipe entrará em contato em breve pelos canais informados.</p>
-            <div className="mx-auto mt-8 flex max-w-md items-start gap-3 rounded-2xl bg-[#f2f7f8] p-4 text-left text-sm leading-6 text-[#53687b]"><ShieldCheck className="mt-0.5 shrink-0 text-[#16815f]" size={20} /><span>Seus dados foram registrados para avaliação da operação do ponto de coleta.</span></div>
-            <a href="." className="mt-9 inline-flex items-center gap-2 rounded-xl bg-[#123f52] px-6 py-3.5 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#0c3140]">Voltar ao início <ArrowRight size={18} /></a>
-          </div>
-        </section>
-      </main>
-    );
+  function resetDemo() {
+    setDemoStarted(false);
   }
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f7fafb] text-[#102a43]">
-      <div className="absolute inset-x-0 top-0 -z-0 h-[620px] bg-[radial-gradient(circle_at_78%_8%,rgba(245,196,81,.2),transparent_34%),linear-gradient(135deg,#e8f2f2_0%,#f7fafb_58%)]" />
-      <header className="relative z-10 border-b border-[#dce6ea]/80 bg-white/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 lg:px-8">
-          <a href="." className="flex items-center gap-3" aria-label="Agi/Agi/PontoHub início">
-            <span className="grid size-11 place-items-center rounded-xl bg-[#123f52] text-[#f5c451] shadow-[0_8px_20px_rgba(18,63,82,.18)]"><Store size={23} /></span>
-            <span><strong className="block text-sm font-black tracking-[.08em] text-[#123f52]">AGI/PONTOHUB</strong><span className="text-xs font-semibold text-[#718396]">cadastro de ponto de coleta</span></span>
+    <main className="min-h-screen bg-[#f5f8ff] text-[#09275f]">
+      <div role="note" aria-label="Aviso de projeto acadêmico" className="bg-[#ffcc00] px-4 py-3 text-center text-xs font-black uppercase tracking-[.08em] text-[#082b70] sm:text-sm">
+        Projeto acadêmico · demonstração não oficial · sem vínculo com o Banco do Brasil
+      </div>
+
+      <header className="border-b border-[#dce5f5] bg-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 lg:px-8">
+          <a href="#inicio" className="flex items-center gap-3" aria-label="Início do protótipo acadêmico BB">
+            <span aria-hidden="true" className="grid size-12 place-items-center rounded-2xl bg-[#ffcc00] text-xl font-black tracking-[-.12em] text-[#0038a8] shadow-sm">BB</span>
+            <span>
+              <strong className="block text-sm font-black tracking-[.02em] text-[#0038a8]">BANCO DO BRASIL</strong>
+              <span className="text-xs font-semibold text-[#66799b]">protótipo acadêmico</span>
+            </span>
           </a>
-          <span className="hidden items-center gap-2 rounded-full border border-[#dce6ea] bg-white px-3 py-2 text-xs font-bold text-[#53687b] sm:flex"><ShieldCheck size={14} className="text-[#16815f]" /> operação segura</span>
+          <nav aria-label="Navegação principal" className="hidden items-center gap-7 text-sm font-bold text-[#3e5278] md:flex">
+            <a className="transition hover:text-[#0038a8]" href="#sobre">Sobre o projeto</a>
+            <a className="transition hover:text-[#0038a8]" href="#demonstracao">Demonstração</a>
+          </nav>
+          <a href="#aviso" className="inline-flex items-center gap-2 rounded-full border border-[#d8e2f1] px-3 py-2 text-xs font-bold text-[#36517f] transition hover:bg-[#f3f6fc]">
+            <CircleHelp size={16} /> <span className="hidden sm:inline">Sobre esta página</span>
+          </a>
         </div>
       </header>
 
-      <section className="relative z-10 mx-auto grid max-w-7xl gap-12 px-5 pb-16 pt-12 lg:grid-cols-[1fr_500px] lg:items-center lg:px-8 lg:pb-24 lg:pt-20">
-        <div className="relative max-w-2xl">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-[#123f52] px-3.5 py-2 text-xs font-black uppercase tracking-[.14em] text-white shadow-lg shadow-[#123f52]/15"><PackageCheck size={14} className="text-[#f5c451]" /> cadastro simplificado</div>
-          <h1 className="text-4xl font-black leading-[1.03] tracking-[-.04em] text-[#102a43] sm:text-6xl">Cadastre seus dados em um único local para iniciar seu <span className="text-[#16815f]">ponto de coleta.</span></h1>
-          <p className="mt-6 max-w-xl text-base leading-7 text-[#53687b] sm:text-lg">Informe os dados necessários em um único formulário. Nossa equipe avaliará o cadastro e retornará pelos canais informados.</p>
-          <div className="relative mt-9 grid gap-4 sm:grid-cols-3">{benefits.map(({ icon: Icon, title, text }) => <div key={title} className="rounded-2xl border border-[#dce6ea] bg-white/90 p-4 shadow-sm"><Icon size={21} className="mb-5 text-[#16815f]" /><strong className="block text-sm">{title}</strong><span className="mt-1 block text-xs leading-5 text-[#718396]">{text}</span></div>)}</div>
-          <div className="mt-8 flex items-center gap-3 text-sm font-bold text-[#53687b]"><Truck size={20} className="text-[#123f52]" /> Um único cadastro para começar</div>
-        </div>
+      <section id="inicio" className="relative isolate overflow-hidden bg-[#073da8] text-white">
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_82%_26%,rgba(255,204,0,.24),transparent_26%),linear-gradient(120deg,#062f86_0%,#0751c8_58%,#0b67d0_100%)]" />
+        <div aria-hidden="true" className="absolute -right-20 -top-28 -z-10 size-[26rem] rounded-full border-[1px] border-white/10 sm:size-[38rem]" />
+        <div className="mx-auto grid max-w-7xl gap-14 px-5 py-16 sm:py-20 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:px-8 lg:py-28">
+          <div>
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[.13em] text-[#ffdf55] backdrop-blur">
+              <BookOpen size={15} /> Trabalho de faculdade
+            </div>
+            <h1 className="max-w-3xl text-4xl font-black leading-[1.04] tracking-[-.04em] sm:text-6xl lg:text-7xl">
+              Uma experiência digital em <span className="text-[#ffdf55]">estudo.</span>
+            </h1>
+            <p className="mt-6 max-w-xl text-base leading-7 text-blue-50/85 sm:text-lg sm:leading-8">
+              Protótipo visual inspirado em serviços bancários digitais, criado para fins educacionais. Explore a interface demonstrativa — não há operações bancárias nesta página.
+            </p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <button type="button" onClick={startDemo} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#ffcc00] px-6 py-3 font-black text-[#082b70] shadow-[0_12px_30px_rgba(0,0,0,.18)] transition hover:-translate-y-0.5 hover:bg-[#ffdc37] focus:outline-none focus:ring-4 focus:ring-white/30">
+                Explorar demonstração <ArrowRight size={18} />
+              </button>
+              <a href="#sobre" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/25 px-6 py-3 font-bold text-white transition hover:bg-white/10">
+                Sobre o projeto <ArrowUpRight size={17} />
+              </a>
+            </div>
+            <p className="mt-5 flex items-center gap-2 text-xs font-semibold text-blue-100/75"><ShieldCheck size={15} /> Nenhum dado pessoal é solicitado, transmitido ou armazenado.</p>
+          </div>
 
-        <div className="rounded-[2rem] border border-[#dce6ea] bg-white p-6 shadow-[0_24px_70px_rgba(16,42,67,.14)] sm:p-8">
-          <div className="mb-7 flex items-start justify-between gap-4"><div><p className="text-sm font-black uppercase tracking-[.16em] text-[#16815f]">Cadastro único</p><h2 className="mt-2 text-2xl font-black tracking-tight">Dados do ponto de coleta</h2></div><div className="rounded-2xl bg-[#fff3d1] p-3 text-[#123f52]"><MapPin size={24} /></div></div>
-          <form onSubmit={handleSubmit} noValidate className="space-y-4">
-            <div><label htmlFor="name" className="mb-2 block text-sm font-bold text-[#29445e]">Nome do responsável <span className="text-[#b94a48]">*</span></label><input id="name" value={name} onChange={(event) => setName(event.target.value)} required autoComplete="name" placeholder="Nome e sobrenome" className="h-12 w-full rounded-xl border border-[#c7d4dd] bg-[#fbfdfe] px-4 text-sm outline-none transition placeholder:text-[#8c9baa] focus:border-[#16815f] focus:ring-4 focus:ring-[#16815f]/10" /></div>
-            <div><label htmlFor="cpf" className="mb-2 block text-sm font-bold text-[#29445e]">CPF ou CNPJ <span className="text-[#b94a48]">*</span></label><input id="cpf" value={cpf} onChange={(event) => setCpf(event.target.value)} required inputMode="numeric" placeholder="Documento do responsável ou estabelecimento" className="h-12 w-full rounded-xl border border-[#c7d4dd] bg-[#fbfdfe] px-4 text-sm outline-none transition placeholder:text-[#8c9baa] focus:border-[#16815f] focus:ring-4 focus:ring-[#16815f]/10" /></div>
-            <div className="grid gap-4 sm:grid-cols-2"><div><label htmlFor="email" className="mb-2 block text-sm font-bold text-[#29445e]">E-mail <span className="text-[#b94a48]">*</span></label><input id="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="email" placeholder="voce@empresa.com" className="h-12 w-full rounded-xl border border-[#c7d4dd] bg-[#fbfdfe] px-4 text-sm outline-none transition placeholder:text-[#8c9baa] focus:border-[#16815f] focus:ring-4 focus:ring-[#16815f]/10" /></div><div><label htmlFor="phone" className="mb-2 block text-sm font-bold text-[#29445e]">WhatsApp <span className="text-[#b94a48]">*</span></label><input id="phone" value={phone} onChange={(event) => setPhone(event.target.value)} required inputMode="tel" placeholder="(00) 00000-0000" className="h-12 w-full rounded-xl border border-[#c7d4dd] bg-[#fbfdfe] px-4 text-sm outline-none transition placeholder:text-[#8c9baa] focus:border-[#16815f] focus:ring-4 focus:ring-[#16815f]/10" /></div></div>
-            <div><label htmlFor="city" className="mb-2 block text-sm font-bold text-[#29445e]">Cidade e UF <span className="text-[#b94a48]">*</span></label><input id="city" value={city} onChange={(event) => setCity(event.target.value)} required placeholder="Ex.: São Paulo - SP" className="h-12 w-full rounded-xl border border-[#c7d4dd] bg-[#fbfdfe] px-4 text-sm outline-none transition placeholder:text-[#8c9baa] focus:border-[#16815f] focus:ring-4 focus:ring-[#16815f]/10" /></div>
-            <div className="rounded-xl border border-[#dce6ea] bg-[#f7fafb] p-4"><div className="flex gap-3"><ShieldCheck size={20} className="mt-0.5 shrink-0 text-[#16815f]" /><p className="text-xs leading-5 text-[#617688]">Seus dados serão utilizados apenas para avaliar o cadastro do ponto e entrar em contato sobre a operação.</p></div></div>
-            <label className="flex cursor-pointer items-start gap-3 text-sm leading-5 text-[#53687b]"><input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} required className="mt-0.5 size-4 accent-[#16815f]" /><span>Li o aviso de privacidade e autorizo o contato sobre o cadastro. <span className="text-[#b94a48]">*</span></span></label>
-            <button type="submit" disabled={!canSubmit} className="group flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-[#123f52] px-5 font-extrabold text-white shadow-lg shadow-[#123f52]/20 transition hover:-translate-y-0.5 hover:bg-[#0c3140] active:translate-y-0 disabled:cursor-not-allowed disabled:bg-[#b7c5cc] disabled:shadow-none focus:outline-none focus:ring-4 focus:ring-[#16815f]/25">Enviar cadastro <ArrowRight size={19} className="transition group-hover:translate-x-1" /></button>
-            <p className="text-center text-xs text-[#8c9baa]">Campos com * são obrigatórios.</p>
-          </form>
+          <div aria-label="Prévia estática do protótipo" className="mx-auto w-full max-w-lg rotate-0 rounded-[2rem] border border-white/20 bg-white p-3 shadow-[0_32px_90px_rgba(0,18,70,.36)] sm:rotate-1">
+            <div className="rounded-[1.5rem] bg-[#f4f7fc] p-5 text-[#09275f] sm:p-7">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="grid size-10 place-items-center rounded-xl bg-[#ffcc00] font-black tracking-[-.12em] text-[#0038a8]">BB</span>
+                  <div><p className="text-xs font-black uppercase tracking-[.08em] text-[#0038a8]">Visão demonstrativa</p><p className="mt-0.5 text-[11px] font-semibold text-[#7585a2]">Interface de estudo</p></div>
+                </div>
+                <span className="rounded-full bg-[#e8effb] px-3 py-1.5 text-[10px] font-black uppercase tracking-[.08em] text-[#194ba5]">Fictício</span>
+              </div>
+              <div className="mt-7 rounded-2xl bg-gradient-to-br from-[#063ca8] to-[#1267d4] p-5 text-white sm:p-6">
+                <div className="flex items-center justify-between text-white/75"><span className="text-xs font-bold">Área de demonstração</span><MonitorSmartphone size={18} /></div>
+                <div className="mt-7 flex items-center gap-2"><span className="size-2 rounded-full bg-[#ffcc00]" /><span className="text-sm font-extrabold">Nenhuma conta conectada</span></div>
+                <p className="mt-2 text-xs leading-5 text-blue-100/75">Esta prévia usa apenas elementos ilustrativos, sem informações reais.</p>
+              </div>
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <div className="rounded-2xl border border-[#e0e7f2] bg-white p-4"><span className="grid size-9 place-items-center rounded-xl bg-[#fff3bf] text-[#174ba4]"><Landmark size={18} /></span><p className="mt-3 text-xs font-extrabold">Conceito visual</p><p className="mt-1 text-[11px] text-[#7a89a3]">Estudo de interface</p></div>
+                <div className="rounded-2xl border border-[#e0e7f2] bg-white p-4"><span className="grid size-9 place-items-center rounded-xl bg-[#e8effb] text-[#174ba4]"><LockKeyhole size={18} /></span><p className="mt-3 text-xs font-extrabold">Sem operações</p><p className="mt-1 text-[11px] text-[#7a89a3]">Apenas demonstração</p></div>
+              </div>
+              <div className="mt-4 flex items-center gap-2 rounded-xl bg-[#fff7d6] px-4 py-3 text-[11px] font-bold leading-5 text-[#684f00]"><BadgeInfo size={16} className="shrink-0" /> Não insira dados reais neste projeto acadêmico.</div>
+            </div>
+          </div>
         </div>
       </section>
-      <footer className="relative z-10 border-t border-[#dce6ea] bg-white/80"><div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-6 text-xs text-[#718396] sm:flex-row sm:items-center sm:justify-between lg:px-8"><span>© 2026 Agi/PontoHub · rede independente de pontos de coleta</span><span className="inline-flex items-center gap-1.5"><Check size={13} /> simplicidade e transparência</span></div></footer>
+
+      <section id="sobre" className="mx-auto max-w-7xl px-5 py-16 sm:py-20 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[.16em] text-[#2459b1]">Sobre o projeto</p>
+            <h2 className="mt-3 text-3xl font-black tracking-[-.03em] text-[#09275f] sm:text-4xl">Um exercício de design, não um serviço bancário.</h2>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <article className="rounded-2xl border border-[#dce5f5] bg-white p-6 shadow-[0_8px_30px_rgba(9,39,95,.04)]">
+              <span className="grid size-11 place-items-center rounded-xl bg-[#fff3bf] text-[#174ba4]"><Sparkles size={21} /></span>
+              <h3 className="mt-5 text-base font-black">Objetivo acadêmico</h3>
+              <p className="mt-2 text-sm leading-6 text-[#617394]">Apresentar uma proposta visual e testar a organização de uma experiência digital em um contexto de sala de aula.</p>
+            </article>
+            <article className="rounded-2xl border border-[#dce5f5] bg-white p-6 shadow-[0_8px_30px_rgba(9,39,95,.04)]">
+              <span className="grid size-11 place-items-center rounded-xl bg-[#e8effb] text-[#174ba4]"><ShieldCheck size={21} /></span>
+              <h3 className="mt-5 text-base font-black">Sem coleta de dados</h3>
+              <p className="mt-2 text-sm leading-6 text-[#617394]">A página não contém cadastro, login, upload, transações ou integração com sistemas do Banco do Brasil.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="demonstracao" className="scroll-mt-8 border-y border-[#dce5f5] bg-white">
+        <div className="mx-auto max-w-7xl px-5 py-16 sm:py-20 lg:px-8">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[.16em] text-[#2459b1]">Percurso do protótipo</p>
+              <h2 className="mt-3 text-3xl font-black tracking-[-.03em] text-[#09275f] sm:text-4xl">Explore a demonstração</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-[#617394]">Uma sequência informativa e estática. Os botões só controlam esta apresentação no navegador.</p>
+            </div>
+            {demoStarted ? (
+              <button type="button" onClick={resetDemo} className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#cfdcf0] px-4 py-3 text-sm font-extrabold text-[#174ba4] transition hover:bg-[#f3f6fc]"><RotateCcw size={17} /> Reiniciar</button>
+            ) : (
+              <button type="button" onClick={startDemo} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0038a8] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#082f82]">Iniciar percurso <ArrowRight size={17} /></button>
+            )}
+          </div>
+          {demoStarted && <p role="status" className="mt-6 flex items-center gap-2 rounded-xl border border-[#dce8bb] bg-[#f4f9e8] px-4 py-3 text-sm font-bold text-[#365512]"><Check size={17} /> Demonstração iniciada. Nenhuma informação foi solicitada ou enviada.</p>}
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {demoSteps.map((step) => (
+              <article key={step.number} className="rounded-2xl border border-[#dce5f5] bg-[#f9fbff] p-6">
+                <span className="text-xs font-black tracking-[.12em] text-[#bd9400]">ETAPA {step.number}</span>
+                <h3 className="mt-4 text-lg font-black text-[#09275f]">{step.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-[#617394]">{step.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="aviso" className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
+        <div className="flex flex-col gap-4 rounded-2xl border-2 border-[#e6c13a] bg-[#fff8dc] p-5 sm:flex-row sm:items-start sm:p-6">
+          <BadgeInfo className="shrink-0 text-[#785d00]" size={22} />
+          <div>
+            <h2 className="text-sm font-black uppercase tracking-[.08em] text-[#5d4800]">Aviso importante</h2>
+            <p className="mt-2 text-sm leading-6 text-[#5d542e]">Este é um projeto acadêmico independente, não oficial e sem afiliação, patrocínio ou aprovação do Banco do Brasil. Não é um canal bancário. Não digite informações pessoais, senhas ou dados financeiros.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer className="border-t border-[#dce5f5] bg-[#09275f] text-white">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-7 sm:flex-row sm:items-center sm:justify-between lg:px-8">
+          <div className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-[#ffcc00] font-black tracking-[-.12em] text-[#0038a8]">BB</span><span className="text-sm font-bold">Protótipo acadêmico independente</span></div>
+          <p className="text-xs leading-5 text-blue-100/75">Demonstração não oficial · sem coleta de dados · sem vínculo com o Banco do Brasil</p>
+        </div>
+      </footer>
     </main>
   );
 }
